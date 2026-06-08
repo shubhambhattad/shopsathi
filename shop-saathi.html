@@ -1,0 +1,2270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Shop Saathi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #FF6B00;
+  --primary-light: #FF8C33;
+  --primary-dim: rgba(255,107,0,0.15);
+  --green: #00A86B;
+  --green-dim: rgba(0,168,107,0.15);
+  --red: #FF3B55;
+  --red-dim: rgba(255,59,85,0.15);
+  --yellow: #FFB800;
+  --yellow-dim: rgba(255,184,0,0.15);
+  --bg: #0D0D0D;
+  --bg2: #141414;
+  --bg3: #1C1C1C;
+  --bg4: #242424;
+  --border: #2A2A2A;
+  --text: #F0F0F0;
+  --text2: #A0A0A0;
+  --text3: #606060;
+  --card: #161616;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --nav-h: 72px;
+  --header-h: 60px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow-x: hidden;
+}
+
+#app {
+  width: 100%;
+  max-width: 430px;
+  min-height: 100vh;
+  background: var(--bg);
+  position: relative;
+  overflow: hidden;
+}
+
+/* SPLASH */
+#splash {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  transition: opacity 0.6s ease;
+}
+#splash.hidden { opacity: 0; pointer-events: none; }
+.splash-logo {
+  width: 90px;
+  height: 90px;
+  background: linear-gradient(135deg, var(--primary), #FF3B00);
+  border-radius: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  box-shadow: 0 20px 60px rgba(255,107,0,0.4);
+  animation: splashPulse 1.5s ease infinite;
+}
+@keyframes splashPulse {
+  0%,100% { box-shadow: 0 20px 60px rgba(255,107,0,0.4); }
+  50% { box-shadow: 0 20px 80px rgba(255,107,0,0.7); }
+}
+.splash-title { font-size: 32px; font-weight: 800; letter-spacing: -0.5px; }
+.splash-title span { color: var(--primary); }
+.splash-sub { font-size: 14px; color: var(--text2); letter-spacing: 0.5px; }
+.splash-loader {
+  width: 40px;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+.splash-loader-bar {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 2px;
+  animation: loadBar 2s ease forwards;
+}
+@keyframes loadBar { from { width: 0%; } to { width: 100%; } }
+
+/* HEADER */
+#header {
+  position: sticky;
+  top: 0;
+  height: var(--header-h);
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+}
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.header-logo {
+  width: 34px;
+  height: 34px;
+  background: linear-gradient(135deg, var(--primary), #FF3B00);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+.header-title { font-size: 18px; font-weight: 700; }
+.header-title span { color: var(--primary); }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.header-store { font-size: 11px; color: var(--text2); text-align: right; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.15s ease;
+}
+.btn-icon:active { transform: scale(0.92); background: var(--bg4); }
+
+/* CONTENT */
+#content {
+  padding-bottom: calc(var(--nav-h) + 10px);
+  min-height: calc(100vh - var(--header-h));
+}
+
+.tab-panel {
+  display: none;
+  padding: 16px;
+  animation: fadeIn 0.25s ease;
+}
+.tab-panel.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* NAV */
+#nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  height: var(--nav-h);
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  z-index: 100;
+  padding: 0 6px;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 4px;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-item:active { transform: scale(0.94); }
+.nav-icon { font-size: 22px; transition: transform 0.2s ease; }
+.nav-label { font-size: 10px; font-weight: 500; color: var(--text3); transition: color 0.2s ease; }
+.nav-item.active .nav-icon { transform: scale(1.1); }
+.nav-item.active .nav-label { color: var(--primary); font-weight: 600; }
+.nav-dot {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--primary);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.nav-item.active .nav-dot { opacity: 1; }
+
+/* CARDS */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.card-gradient {
+  background: linear-gradient(135deg, var(--primary) 0%, #FF3B00 100%);
+  border: none;
+  color: white;
+}
+.card-green {
+  background: linear-gradient(135deg, var(--green) 0%, #006644 100%);
+  border: none;
+  color: white;
+}
+
+/* SECTION HEADER */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.section-title { font-size: 15px; font-weight: 700; color: var(--text); }
+.section-sub { font-size: 12px; color: var(--text2); }
+.badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: var(--primary-dim);
+  color: var(--primary);
+}
+.badge-red { background: var(--red-dim); color: var(--red); }
+.badge-green { background: var(--green-dim); color: var(--green); }
+
+/* STAT GRID */
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+}
+.stat-label { font-size: 11px; color: var(--text2); margin-bottom: 4px; font-weight: 500; }
+.stat-value { font-size: 20px; font-weight: 700; }
+.stat-sub { font-size: 10px; color: var(--text3); margin-top: 2px; }
+.stat-icon { font-size: 24px; margin-bottom: 8px; }
+
+/* INSIGHT CARD */
+.insight-card {
+  background: linear-gradient(135deg, #1A0F00, #241200);
+  border: 1px solid rgba(255,107,0,0.3);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+}
+.insight-card::before {
+  content: '';
+  position: absolute;
+  top: -30px; right: -30px;
+  width: 100px; height: 100px;
+  background: radial-gradient(circle, rgba(255,107,0,0.2), transparent);
+  border-radius: 50%;
+}
+.insight-label { font-size: 10px; font-weight: 600; color: var(--primary); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+.insight-text { font-size: 14px; line-height: 1.5; color: var(--text); }
+.insight-icon { font-size: 28px; margin-bottom: 8px; display: block; }
+
+/* TRANSACTION LIST */
+.txn-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.txn-item:last-child { border-bottom: none; padding-bottom: 0; }
+.txn-avatar {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  background: var(--bg3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.txn-info { flex: 1; }
+.txn-name { font-size: 14px; font-weight: 600; }
+.txn-date { font-size: 11px; color: var(--text2); margin-top: 2px; }
+.txn-amount { font-size: 15px; font-weight: 700; color: var(--green); }
+.txn-amount.debit { color: var(--red); }
+
+/* UDHAAR */
+.udhaar-total {
+  background: linear-gradient(135deg, #1A0000, #200A00);
+  border: 1px solid rgba(255,59,85,0.3);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+.udhaar-total-label { font-size: 12px; color: var(--text2); margin-bottom: 4px; }
+.udhaar-total-amount { font-size: 32px; font-weight: 800; color: var(--red); }
+.udhaar-total-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
+
+.udhaar-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 10px;
+  transition: all 0.2s ease;
+}
+.udhaar-card:active { transform: scale(0.98); }
+.udhaar-card.red-border { border-left: 3px solid var(--red); }
+.udhaar-card.yellow-border { border-left: 3px solid var(--yellow); }
+.udhaar-card.green-border { border-left: 3px solid var(--green); }
+.udhaar-row1 { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.udhaar-name { font-size: 15px; font-weight: 700; }
+.udhaar-amount { font-size: 18px; font-weight: 800; }
+.udhaar-amount.red { color: var(--red); }
+.udhaar-amount.yellow { color: var(--yellow); }
+.udhaar-amount.green-text { color: var(--green); }
+.udhaar-row2 { display: flex; align-items: center; justify-content: space-between; }
+.udhaar-days { font-size: 11px; color: var(--text2); }
+.udhaar-actions { display: flex; gap: 8px; }
+.btn-sm {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: 'Outfit', sans-serif;
+}
+.btn-sm:active { transform: scale(0.94); }
+.btn-wa { background: #25D366; color: white; }
+.btn-paid { background: var(--green-dim); color: var(--green); }
+.btn-primary { background: var(--primary); color: white; }
+.btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+
+/* FORMS */
+.form-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.form-title { font-size: 14px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.form-group { margin-bottom: 12px; }
+.form-label { font-size: 11px; color: var(--text2); font-weight: 600; margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 0.5px; }
+.form-input {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 14px;
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form-input:focus { border-color: var(--primary); }
+.form-input::placeholder { color: var(--text3); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.btn-full {
+  width: 100%;
+  padding: 13px;
+  border-radius: 12px;
+  background: var(--primary);
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  transition: all 0.15s ease;
+}
+.btn-full:active { transform: scale(0.97); background: var(--primary-light); }
+
+/* INVENTORY */
+.filter-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.filter-row::-webkit-scrollbar { display: none; }
+.filter-btn {
+  padding: 7px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text2);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  font-family: 'Outfit', sans-serif;
+}
+.filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+.filter-btn:active { transform: scale(0.95); }
+
+.inv-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 13px;
+  margin-bottom: 10px;
+  transition: all 0.2s;
+}
+.inv-card.low { border-left: 3px solid var(--primary); }
+.inv-card.expiring { border-left: 3px solid var(--red); }
+.inv-row1 { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.inv-name { font-size: 14px; font-weight: 700; }
+.inv-cat { font-size: 10px; color: var(--text3); margin-top: 2px; }
+.inv-qty { text-align: right; }
+.inv-qty-val { font-size: 16px; font-weight: 800; }
+.inv-qty-unit { font-size: 10px; color: var(--text2); }
+.inv-bar-wrap { background: var(--bg3); border-radius: 4px; height: 5px; overflow: hidden; margin-bottom: 6px; }
+.inv-bar { height: 100%; border-radius: 4px; transition: width 0.4s ease; }
+.inv-row2 { display: flex; align-items: center; justify-content: space-between; }
+.inv-tag { font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 6px; }
+.tag-low { background: var(--primary-dim); color: var(--primary); }
+.tag-exp { background: var(--red-dim); color: var(--red); }
+.tag-ok { background: var(--green-dim); color: var(--green); }
+.inv-expiry { font-size: 11px; color: var(--text3); }
+
+/* AI CHAT */
+#chat-wrap {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--header-h) - var(--nav-h) - 32px);
+}
+.api-key-bar {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+.api-key-bar input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 13px;
+  font-family: 'Outfit', sans-serif;
+  outline: none;
+}
+.api-key-bar input::placeholder { color: var(--text3); }
+.btn-save-key {
+  padding: 6px 14px;
+  border-radius: 8px;
+  background: var(--primary);
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+}
+.chips-row {
+  display: flex;
+  gap: 7px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+  scrollbar-width: none;
+}
+.chips-row::-webkit-scrollbar { display: none; }
+.chip {
+  padding: 7px 13px;
+  border-radius: 20px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  transition: all 0.2s;
+}
+.chip:active { transform: scale(0.95); background: var(--primary-dim); color: var(--primary); border-color: var(--primary); }
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.msg { display: flex; gap: 8px; align-items: flex-end; }
+.msg.user { flex-direction: row-reverse; }
+.msg-avatar {
+  width: 30px; height: 30px;
+  border-radius: 10px;
+  background: var(--bg3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.msg.user .msg-avatar { background: var(--primary-dim); }
+.msg-bubble {
+  max-width: 78%;
+  padding: 10px 13px;
+  border-radius: 16px;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+.msg.ai .msg-bubble {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 4px;
+}
+.msg.user .msg-bubble {
+  background: var(--primary);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+.typing-indicator {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: 12px 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  border-bottom-left-radius: 4px;
+  width: fit-content;
+}
+.typing-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--text3);
+  animation: typingBounce 1.2s ease infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingBounce {
+  0%,60%,100% { transform: translateY(0); background: var(--text3); }
+  30% { transform: translateY(-5px); background: var(--primary); }
+}
+.chat-input-wrap {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  align-items: flex-end;
+}
+.chat-input {
+  flex: 1;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 11px 14px;
+  font-size: 14px;
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  outline: none;
+  resize: none;
+  max-height: 100px;
+  transition: border-color 0.2s;
+}
+.chat-input:focus { border-color: var(--primary); }
+.chat-input::placeholder { color: var(--text3); }
+.btn-send {
+  width: 44px; height: 44px;
+  border-radius: 14px;
+  background: var(--primary);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: all 0.15s;
+}
+.btn-send:active { transform: scale(0.92); }
+
+/* REPORTS */
+.report-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.profit-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+.profit-item { text-align: center; }
+.profit-label { font-size: 11px; color: var(--text2); margin-bottom: 4px; }
+.profit-val { font-size: 20px; font-weight: 800; }
+
+.bar-chart { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+.bar-item { display: flex; align-items: center; gap: 10px; }
+.bar-label { font-size: 12px; width: 80px; flex-shrink: 0; color: var(--text2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar-track { flex: 1; background: var(--bg3); border-radius: 6px; height: 28px; overflow: hidden; position: relative; }
+.bar-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 10px; font-size: 12px; font-weight: 600; color: white; transition: width 0.6s ease; }
+.bar-val { font-size: 12px; font-weight: 700; color: var(--text); white-space: nowrap; width: 60px; text-align: right; flex-shrink: 0; }
+
+.gst-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.gst-row:last-child { border-bottom: none; padding-bottom: 0; }
+.gst-label { font-size: 13px; color: var(--text2); }
+.gst-val { font-size: 14px; font-weight: 700; }
+
+.weekly-trend { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 12px; }
+.week-bar { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.week-bar-wrap { width: 100%; display: flex; justify-content: center; align-items: flex-end; height: 80px; }
+.week-bar-fill { width: 70%; border-radius: 6px 6px 0 0; background: linear-gradient(to top, var(--primary), var(--primary-light)); min-height: 8px; transition: height 0.5s ease; }
+.week-label { font-size: 11px; color: var(--text2); }
+.week-val { font-size: 11px; font-weight: 600; color: var(--primary); }
+
+/* MODAL */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  z-index: 500;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  width: 100%;
+  max-width: 430px;
+  background: var(--bg2);
+  border-radius: 24px 24px 0 0;
+  padding: 24px 20px;
+  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+  border-top: 1px solid var(--border);
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 20px; }
+.modal-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; }
+
+/* EMPTY STATE */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  gap: 12px;
+}
+.empty-icon { font-size: 48px; opacity: 0.4; }
+.empty-text { font-size: 14px; color: var(--text2); line-height: 1.5; }
+
+/* UTILITY */
+.divider { height: 1px; background: var(--border); margin: 12px 0; }
+.flex-row { display: flex; align-items: center; gap: 8px; }
+.mt-4 { margin-top: 4px; }
+.mt-8 { margin-top: 8px; }
+.text-sm { font-size: 12px; color: var(--text2); }
+.text-xs { font-size: 11px; color: var(--text3); }
+.font-bold { font-weight: 700; }
+
+select.form-input { appearance: none; -webkit-appearance: none; }
+
+/* Button press animation */
+button, .btn-sm, .btn-full, .nav-item, .udhaar-card, .inv-card {
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* ===== TREND BAZAAR ===== */
+.trends-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.trends-title { font-size: 22px; font-weight: 800; }
+.trends-sub { font-size: 12px; color: var(--text2); margin-top: 3px; }
+.trends-updated { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.btn-refresh {
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.btn-refresh:active { transform: scale(0.94); background: var(--bg4); }
+.btn-refresh.spinning { animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Season banner */
+.season-banner {
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 14px;
+  position: relative;
+  overflow: hidden;
+  animation: seasonPulse 3s ease-in-out infinite;
+}
+@keyframes seasonPulse {
+  0%,100% { box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+  50% { box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+}
+.season-banner.summer { background: linear-gradient(135deg, #FF6B00, #FFB800); }
+.season-banner.monsoon { background: linear-gradient(135deg, #1565C0, #00897B); }
+.season-banner.winter { background: linear-gradient(135deg, #4A148C, #1565C0); }
+.season-banner.festival { background: linear-gradient(135deg, #E65100, #FFD600); }
+.season-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.2);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 10px;
+}
+.season-tip { font-size: 14px; color: rgba(255,255,255,0.95); line-height: 1.5; font-weight: 500; }
+
+/* Trend product card */
+.trend-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 10px;
+  transition: all 0.2s;
+}
+.trend-card:active { transform: scale(0.98); }
+.trend-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+.trend-rank {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--primary);
+  line-height: 1;
+  min-width: 36px;
+  flex-shrink: 0;
+}
+.trend-info { flex: 1; }
+.trend-name { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.trend-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.trend-cat {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--bg3);
+  color: var(--text2);
+}
+.trend-direction {
+  font-size: 13px;
+  font-weight: 700;
+}
+.trend-direction.up { color: var(--green); }
+.trend-direction.down { color: var(--red); }
+.trend-margin {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--green-dim);
+  color: var(--green);
+}
+.trend-score-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.trend-score-label { font-size: 11px; color: var(--text3); width: 70px; flex-shrink: 0; }
+.trend-score-track { flex: 1; background: var(--bg3); border-radius: 4px; height: 7px; overflow: hidden; }
+.trend-score-fill { height: 100%; border-radius: 4px; background: var(--green); transition: width 0.6s ease; }
+.trend-score-val { font-size: 12px; font-weight: 700; color: var(--green); width: 32px; text-align: right; flex-shrink: 0; }
+.trend-reason { font-size: 12px; color: var(--text2); line-height: 1.4; margin-bottom: 10px; }
+.trend-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.trend-stock-hint { font-size: 11px; color: var(--text3); }
+.btn-amazon {
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: #FF9900;
+  color: #111;
+  font-size: 11px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.btn-amazon:active { transform: scale(0.94); }
+
+/* Avoid card */
+.avoid-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 4px solid #FF4444;
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-bottom: 8px;
+}
+.avoid-name { font-size: 14px; font-weight: 700; color: #FF4444; margin-bottom: 4px; }
+.avoid-reason { font-size: 12px; color: var(--text2); line-height: 1.4; }
+
+/* Local insight */
+.local-insight-card {
+  background: linear-gradient(135deg, #0A1628, #0D2137);
+  border: 1px solid rgba(74,144,217,0.3);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 14px;
+  position: relative;
+  overflow: hidden;
+}
+.local-insight-card::before {
+  content: '';
+  position: absolute;
+  top: -20px; right: -20px;
+  width: 80px; height: 80px;
+  background: radial-gradient(circle, rgba(74,144,217,0.2), transparent);
+  border-radius: 50%;
+}
+.local-insight-label { font-size: 10px; font-weight: 600; color: #4A90D9; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+.local-insight-text { font-size: 14px; color: white; line-height: 1.5; }
+
+/* Margin calculator */
+.margin-calc-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 14px;
+}
+.margin-result {
+  text-align: center;
+  padding: 14px;
+  background: var(--bg3);
+  border-radius: var(--radius-sm);
+  margin-top: 12px;
+}
+.margin-result-label { font-size: 12px; color: var(--text2); margin-bottom: 4px; }
+.margin-result-val { font-size: 36px; font-weight: 800; }
+.margin-result-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--bg3) 25%, var(--bg4) 50%, var(--bg3) 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s ease infinite;
+  border-radius: 8px;
+}
+.skel-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 10px;
+}
+.skel-line { height: 14px; margin-bottom: 8px; }
+.skel-line.w-60 { width: 60%; }
+.skel-line.w-80 { width: 80%; }
+.skel-line.w-40 { width: 40%; }
+.skel-line.w-100 { width: 100%; }
+.skel-line.h-8 { height: 8px; }
+.skel-line.h-20 { height: 20px; }
+.skel-banner { height: 90px; border-radius: var(--radius); margin-bottom: 14px; }
+
+/* 6-tab nav tweak */
+#nav .nav-icon { font-size: 20px; }
+#nav .nav-label { font-size: 9px; }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- SPLASH -->
+  <div id="splash">
+    <div class="splash-logo">🛒</div>
+    <div class="splash-title">Shop <span>Saathi</span></div>
+    <div class="splash-sub">Aapka Smart Dukaan Assistant</div>
+    <div class="splash-loader"><div class="splash-loader-bar"></div></div>
+  </div>
+
+  <!-- HEADER -->
+  <div id="header">
+    <div class="header-brand">
+      <div class="header-logo">🛒</div>
+      <div class="header-title">Shop <span>Saathi</span></div>
+    </div>
+    <div class="header-right">
+      <div class="header-store" id="header-store-name">Sharma General Store</div>
+      <div class="btn-icon" onclick="openSettings()">⚙️</div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div id="content">
+
+    <!-- TAB 1: DASHBOARD -->
+    <div id="tab-home" class="tab-panel active">
+      <div style="margin-bottom:16px;">
+        <div style="font-size:13px;color:var(--text2);" id="greeting-time">Good morning,</div>
+        <div style="font-size:22px;font-weight:800;" id="greeting-name">Rajesh Sharma ji 🙏</div>
+      </div>
+
+      <!-- Today's Sales -->
+      <div class="card card-gradient" style="margin-bottom:12px;">
+        <div style="font-size:12px;opacity:0.85;margin-bottom:4px;">Aaj ki Bikri</div>
+        <div style="font-size:34px;font-weight:800;" id="today-sales">₹0</div>
+        <div style="font-size:12px;opacity:0.75;margin-top:4px;" id="today-txn-count">0 transactions today</div>
+        <div style="position:absolute;right:16px;top:16px;font-size:32px;opacity:0.3;">📈</div>
+      </div>
+
+      <!-- Stat Grid -->
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-icon">📒</div>
+          <div class="stat-label">Total Udhaar</div>
+          <div class="stat-value" id="dash-udhaar" style="color:var(--red)">₹0</div>
+          <div class="stat-sub" id="dash-udhaar-count">0 customers</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📦</div>
+          <div class="stat-label">Low Stock</div>
+          <div class="stat-value" id="dash-lowstock" style="color:var(--primary)">0</div>
+          <div class="stat-sub">items need reorder</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⚠️</div>
+          <div class="stat-label">Expiring Soon</div>
+          <div class="stat-value" id="dash-expiring" style="color:var(--red)">0</div>
+          <div class="stat-sub">within 10 days</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">💰</div>
+          <div class="stat-label">This Week</div>
+          <div class="stat-value" id="dash-week" style="color:var(--green)">₹0</div>
+          <div class="stat-sub">total sales</div>
+        </div>
+      </div>
+
+      <!-- AI Insight -->
+      <div class="insight-card">
+        <div class="insight-label">✨ AI Insight of the Day</div>
+        <span class="insight-icon" id="insight-icon">💡</span>
+        <div class="insight-text" id="insight-text">Loading insight...</div>
+      </div>
+
+      <!-- Recent Transactions -->
+      <div class="card">
+        <div class="section-header">
+          <div class="section-title">Haali Transactions</div>
+          <div class="badge">Last 5</div>
+        </div>
+        <div id="recent-txns"></div>
+      </div>
+    </div>
+
+    <!-- TAB 2: UDHAAR -->
+    <div id="tab-udhaar" class="tab-panel">
+      <div class="udhaar-total">
+        <div class="udhaar-total-label">Kul Udhaar Baaki</div>
+        <div class="udhaar-total-amount" id="udhaar-total-amt">₹0</div>
+        <div class="udhaar-total-sub" id="udhaar-count-sub">0 customers pending</div>
+      </div>
+
+      <!-- Add Udhaar Form -->
+      <div class="form-card">
+        <div class="form-title">➕ Naya Udhaar</div>
+        <div class="form-group">
+          <label class="form-label">Customer Name</label>
+          <input class="form-input" id="new-udhaar-name" placeholder="Jaise: Ramesh Kumar">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Amount (₹)</label>
+            <input class="form-input" id="new-udhaar-amount" type="number" placeholder="500">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Item / Note</label>
+            <input class="form-input" id="new-udhaar-item" placeholder="Aata, Chawal...">
+          </div>
+        </div>
+        <button class="btn-full" onclick="addUdhaar()">📒 Udhaar Daalo</button>
+      </div>
+
+      <div class="section-header">
+        <div class="section-title">Udhaar Khata</div>
+        <div class="badge badge-red" id="udhaar-pending-badge">0 pending</div>
+      </div>
+      <div id="udhaar-list"></div>
+    </div>
+
+    <!-- TAB 3: INVENTORY -->
+    <div id="tab-inventory" class="tab-panel">
+      <div class="section-header">
+        <div class="section-title">Maal Khata</div>
+        <div class="badge" id="inv-count-badge">0 items</div>
+      </div>
+
+      <div class="filter-row">
+        <button class="filter-btn active" onclick="setInvFilter('all', this)">Sab Items</button>
+        <button class="filter-btn" onclick="setInvFilter('low', this)">⚡ Low Stock</button>
+        <button class="filter-btn" onclick="setInvFilter('expiring', this)">⏰ Expiring</button>
+      </div>
+
+      <!-- Add Item Form -->
+      <div class="form-card">
+        <div class="form-title">➕ Naya Item</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Name</label>
+            <input class="form-input" id="inv-name" placeholder="Aata">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <input class="form-input" id="inv-cat" placeholder="Grocery">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Quantity</label>
+            <input class="form-input" id="inv-qty" type="number" placeholder="10">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Unit</label>
+            <input class="form-input" id="inv-unit" placeholder="kg / pcs / L">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Reorder Level</label>
+            <input class="form-input" id="inv-reorder" type="number" placeholder="5">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Expiry Date</label>
+            <input class="form-input" id="inv-expiry" type="date">
+          </div>
+        </div>
+        <button class="btn-full" onclick="addInventoryItem()">📦 Item Add Karo</button>
+      </div>
+
+      <div id="inventory-list"></div>
+    </div>
+
+    <!-- TAB 4: AI CHAT -->
+    <div id="tab-chat" class="tab-panel">
+      <div id="chat-wrap">
+        <div class="api-key-bar">
+          <span style="font-size:14px;">🔑</span>
+          <input type="password" id="api-key-input" placeholder="Anthropic API key yahan daalo...">
+          <button class="btn-save-key" onclick="saveApiKey()">Save</button>
+        </div>
+
+        <div class="chips-row" id="chat-chips"></div>
+
+        <div class="chat-messages" id="chat-messages">
+          <div class="msg ai">
+            <div class="msg-avatar">🤖</div>
+            <div class="msg-bubble">Namaste Dukandaar ji! 🙏 Main Shop Saathi hoon. Aapki dukaan ke baare mein kuch bhi poochho — inventory, udhaar, GST, ya profit. Kaise madad karoon?</div>
+          </div>
+        </div>
+
+        <div class="chat-input-wrap">
+          <textarea class="chat-input" id="chat-input" placeholder="Kuch poochho dukaan ke baare mein..." rows="1" onkeydown="handleChatKey(event)"></textarea>
+          <button class="btn-send" onclick="sendChat()">➤</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: REPORTS -->
+    <div id="tab-reports" class="tab-panel">
+      <!-- Weekly Profit -->
+      <div class="report-card">
+        <div class="section-header">
+          <div class="section-title">📊 Is Hafte ka Hisaab</div>
+          <div class="badge badge-green">Live</div>
+        </div>
+        <div class="profit-row">
+          <div class="profit-item">
+            <div class="profit-label">Total Bikri</div>
+            <div class="profit-val" id="rpt-sales" style="color:var(--green)">₹0</div>
+          </div>
+          <div class="profit-item">
+            <div class="profit-label">Net Profit (~30%)</div>
+            <div class="profit-val" id="rpt-profit" style="color:var(--primary)">₹0</div>
+          </div>
+          <div class="profit-item">
+            <div class="profit-label">Avg Per Day</div>
+            <div class="profit-val" id="rpt-avg" style="color:var(--text)">₹0</div>
+          </div>
+          <div class="profit-item">
+            <div class="profit-label">Transactions</div>
+            <div class="profit-val" id="rpt-txns" style="color:var(--text)">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Items -->
+      <div class="report-card">
+        <div class="section-title" style="margin-bottom:4px;">🏆 Top 5 Selling Items</div>
+        <div class="text-sm" style="margin-bottom:12px;">Is hafte ki bikri ke hisaab se</div>
+        <div class="bar-chart" id="top-items-chart"></div>
+      </div>
+
+      <!-- GST Summary -->
+      <div class="report-card">
+        <div class="section-title" style="margin-bottom:12px;">🧾 GST Summary</div>
+        <div id="gst-summary"></div>
+      </div>
+
+      <!-- Monthly Trend -->
+      <div class="report-card">
+        <div class="section-title" style="margin-bottom:4px;">📅 Monthly Trend</div>
+        <div class="text-sm" style="margin-bottom:12px;">Pichle 4 hafte</div>
+        <div class="weekly-trend" id="monthly-trend"></div>
+      </div>
+
+      <!-- WhatsApp Report -->
+      <button class="btn-full" style="background: #25D366; margin-bottom:16px;" onclick="sendWhatsAppReport()">
+        📱 WhatsApp par Report Bhejo
+      </button>
+    </div>
+
+    <!-- TAB 6: TREND BAZAAR -->
+    <div id="tab-trends" class="tab-panel">
+      <div class="trends-header-row">
+        <div>
+          <div class="trends-title">🔥 Trend Bazaar</div>
+          <div class="trends-sub">Is hafte ke trending products</div>
+          <div class="trends-updated" id="trends-updated-label"></div>
+        </div>
+        <button class="btn-refresh" id="trends-refresh-btn" onclick="refreshTrends()">🔄 Refresh</button>
+      </div>
+      <div id="trends-content">
+        <!-- populated by JS -->
+      </div>
+    </div>
+
+  </div><!-- /content -->
+
+  <!-- BOTTOM NAV -->
+  <nav id="nav">
+    <div class="nav-item active" onclick="switchTab('home', this)">
+      <div class="nav-icon">🏠</div>
+      <div class="nav-label">Home</div>
+      <div class="nav-dot"></div>
+    </div>
+    <div class="nav-item" onclick="switchTab('udhaar', this)">
+      <div class="nav-icon">📒</div>
+      <div class="nav-label">Udhaar</div>
+      <div class="nav-dot"></div>
+    </div>
+    <div class="nav-item" onclick="switchTab('inventory', this)">
+      <div class="nav-icon">📦</div>
+      <div class="nav-label">Stock</div>
+      <div class="nav-dot"></div>
+    </div>
+    <div class="nav-item" onclick="switchTab('chat', this)">
+      <div class="nav-icon">🤖</div>
+      <div class="nav-label">AI Saathi</div>
+      <div class="nav-dot"></div>
+    </div>
+    <div class="nav-item" onclick="switchTab('reports', this)">
+      <div class="nav-icon">📊</div>
+      <div class="nav-label">Reports</div>
+      <div class="nav-dot"></div>
+    </div>
+    <div class="nav-item" onclick="switchTab('trends', this)">
+      <div class="nav-icon">🔥</div>
+      <div class="nav-label">Trends</div>
+      <div class="nav-dot"></div>
+    </div>
+  </nav>
+
+</div><!-- /app -->
+
+<!-- SETTINGS MODAL -->
+<div class="modal-overlay" id="settings-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">⚙️ Settings</div>
+    <div class="form-group">
+      <label class="form-label">Store Name</label>
+      <input class="form-input" id="settings-store-name" placeholder="Aapki dukaan ka naam">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Owner Name</label>
+      <input class="form-input" id="settings-owner-name" placeholder="Aapka naam">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Location</label>
+      <input class="form-input" id="settings-location" placeholder="Shehar / Mohalla">
+    </div>
+    <div class="form-group">
+      <label class="form-label">WhatsApp Number (with country code)</label>
+      <input class="form-input" id="settings-phone" placeholder="919876543210">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Anthropic API Key</label>
+      <input class="form-input" type="password" id="settings-api-key" placeholder="sk-ant-...">
+    </div>
+    <button class="btn-full" onclick="saveSettings()" style="margin-top:8px;">💾 Settings Save Karo</button>
+    <button class="btn-full" onclick="closeSettings()" style="background:var(--bg3);color:var(--text);margin-top:10px;">Cancel</button>
+  </div>
+</div>
+
+<script>
+// ========== DATA SCHEMA ==========
+const DB = {
+  get store() { return JSON.parse(localStorage.getItem('ss_store') || 'null'); },
+  set store(v) { localStorage.setItem('ss_store', JSON.stringify(v)); },
+  get udhaar() { return JSON.parse(localStorage.getItem('ss_udhaar') || '[]'); },
+  set udhaar(v) { localStorage.setItem('ss_udhaar', JSON.stringify(v)); },
+  get inventory() { return JSON.parse(localStorage.getItem('ss_inventory') || '[]'); },
+  set inventory(v) { localStorage.setItem('ss_inventory', JSON.stringify(v)); },
+  get transactions() { return JSON.parse(localStorage.getItem('ss_transactions') || '[]'); },
+  set transactions(v) { localStorage.setItem('ss_transactions', JSON.stringify(v)); },
+  get apiKey() { return localStorage.getItem('ss_api_key') || ''; },
+  set apiKey(v) { localStorage.setItem('ss_api_key', v); },
+  get initialized() { return localStorage.getItem('ss_init') === '1'; },
+  set initialized(v) { localStorage.setItem('ss_init', v ? '1' : '0'); }
+};
+
+// ========== DUMMY DATA ==========
+function initDummyData() {
+  DB.store = {
+    name: 'Sharma General Store',
+    owner: 'Rajesh Sharma',
+    location: 'Pune',
+    phone: '919876543210'
+  };
+
+  const now = Date.now();
+  const day = 86400000;
+
+  DB.udhaar = [
+    { id: 1, name: 'Ramesh Kumar', amount: 850, item: 'Aata, Chawal', date: now - 18*day, paid: false },
+    { id: 2, name: 'Sunita Devi', amount: 320, item: 'Sugar, Salt', date: now - 5*day, paid: false },
+    { id: 3, name: 'Mohan Lal', amount: 1200, item: 'Refined Oil, Dal', date: now - 22*day, paid: false },
+    { id: 4, name: 'Priya Singh', amount: 450, item: 'Amul Milk, Butter', date: now - 3*day, paid: false },
+    { id: 5, name: 'Vikram Yadav', amount: 2100, item: 'Grocery (bulk)', date: now - 30*day, paid: false }
+  ];
+
+  const today = new Date();
+  const tenDays = new Date(today); tenDays.setDate(tenDays.getDate() + 8);
+  const sevenDays = new Date(today); sevenDays.setDate(sevenDays.getDate() + 6);
+  const fiveDays = new Date(today); fiveDays.setDate(fiveDays.getDate() + 4);
+  const sixMonths = new Date(today); sixMonths.setMonth(sixMonths.getMonth() + 6);
+  const oneYear = new Date(today); oneYear.setFullYear(oneYear.getFullYear() + 1);
+  const threeMonths = new Date(today); threeMonths.setMonth(threeMonths.getMonth() + 3);
+
+  const fmt = d => d.toISOString().split('T')[0];
+
+  DB.inventory = [
+    { id:1, name:'Aata (Ashirvaad)', cat:'Grocery', qty:8, unit:'kg', reorder:15, expiry:fmt(sixMonths), low:false },
+    { id:2, name:'Chawal (Basmati)', cat:'Grocery', qty:4, unit:'kg', reorder:10, expiry:fmt(oneYear), low:true },
+    { id:3, name:'Toor Dal', cat:'Grocery', qty:3, unit:'kg', reorder:8, expiry:fmt(oneYear), low:true },
+    { id:4, name:'Sugar', cat:'Grocery', qty:12, unit:'kg', reorder:10, expiry:fmt(oneYear), low:false },
+    { id:5, name:'Salt (Tata)', cat:'Grocery', qty:20, unit:'pcs', reorder:10, expiry:fmt(oneYear), low:false },
+    { id:6, name:'Refined Oil', cat:'Grocery', qty:2, unit:'L', reorder:5, expiry:fmt(tenDays), low:true },
+    { id:7, name:'Amul Butter', cat:'Dairy', qty:5, unit:'pcs', reorder:8, expiry:fmt(sevenDays), low:true },
+    { id:8, name:'Amul Milk', cat:'Dairy', qty:12, unit:'L', reorder:10, expiry:fmt(fiveDays), low:false },
+    { id:9, name:'Parle-G Biscuit', cat:'Biscuits', qty:40, unit:'pcs', reorder:20, expiry:fmt(threeMonths), low:false },
+    { id:10, name:'Maggi Noodles', cat:'Instant Food', qty:25, unit:'pcs', reorder:15, expiry:fmt(sixMonths), low:false },
+    { id:11, name:'Colgate (100g)', cat:'Personal Care', qty:15, unit:'pcs', reorder:10, expiry:fmt(oneYear), low:false },
+    { id:12, name:'Surf Excel (1kg)', cat:'Detergent', qty:6, unit:'pcs', reorder:8, expiry:fmt(oneYear), low:false },
+    { id:13, name:'Dettol Soap', cat:'Personal Care', qty:18, unit:'pcs', reorder:12, expiry:fmt(oneYear), low:false },
+    { id:14, name:'Lays Chips', cat:'Snacks', qty:3, unit:'pcs', reorder:10, expiry:fmt(threeMonths), low:true },
+    { id:15, name:'Good Day Biscuit', cat:'Biscuits', qty:22, unit:'pcs', reorder:15, expiry:fmt(threeMonths), low:false },
+    { id:16, name:'Bisleri Water', cat:'Beverages', qty:30, unit:'bottles', reorder:20, expiry:fmt(sixMonths), low:false },
+    { id:17, name:'Frooti (200ml)', cat:'Beverages', qty:48, unit:'pcs', reorder:30, expiry:fmt(threeMonths), low:false },
+    { id:18, name:'Ariel Powder', cat:'Detergent', qty:4, unit:'kg', reorder:5, expiry:fmt(oneYear), low:true },
+    { id:19, name:'Lifebuoy Soap', cat:'Personal Care', qty:24, unit:'pcs', reorder:15, expiry:fmt(oneYear), low:false },
+    { id:20, name:'Dal (Chana)', cat:'Grocery', qty:2, unit:'kg', reorder:6, expiry:fmt(oneYear), low:true }
+  ];
+
+  const items = ['Aata', 'Chawal', 'Dal', 'Sugar', 'Oil', 'Maggi', 'Parle-G', 'Milk', 'Butter', 'Chips', 'Colgate', 'Surf Excel'];
+  const customers = ['Ramesh', 'Sunita', 'Mohan', 'Priya', 'Vikram', 'Asha', 'Suresh', 'Kavita', 'Raj'];
+  const emojis = ['🛒','🥛','🌾','🧴','🫙','🧈','🍜','🧹'];
+  let txns = [];
+  let id = 1;
+  for(let d = 6; d >= 0; d--) {
+    const base = now - d*day;
+    const count = 5 + Math.floor(Math.random() * 4);
+    for(let i = 0; i < count; i++) {
+      txns.push({
+        id: id++,
+        item: items[Math.floor(Math.random()*items.length)],
+        customer: customers[Math.floor(Math.random()*customers.length)],
+        amount: 200 + Math.floor(Math.random() * 1800),
+        date: base + Math.floor(Math.random() * day),
+        emoji: emojis[Math.floor(Math.random()*emojis.length)]
+      });
+    }
+  }
+  DB.transactions = txns;
+  DB.initialized = true;
+}
+
+// ========== UTILITIES ==========
+function fmtINR(n) {
+  return '₹' + Number(n).toLocaleString('en-IN');
+}
+
+function daysSince(ts) {
+  return Math.floor((Date.now() - ts) / 86400000);
+}
+
+function daysUntil(dateStr) {
+  const d = new Date(dateStr);
+  d.setHours(23,59,59,999);
+  return Math.ceil((d - Date.now()) / 86400000);
+}
+
+function todayStr() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function formatDate(ts) {
+  const d = new Date(ts);
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${d.getDate()} ${months[d.getMonth()]}, ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
+}
+
+// ========== TAB SWITCHING ==========
+let currentTab = 'home';
+function switchTab(tab, el) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  el.classList.add('active');
+  currentTab = tab;
+  if(tab === 'home') renderDashboard();
+  if(tab === 'udhaar') renderUdhaar();
+  if(tab === 'inventory') renderInventory();
+  if(tab === 'reports') renderReports();
+  if(tab === 'chat') loadApiKeyUI();
+  if(tab === 'trends') renderTrends();
+}
+
+// ========== GREETING ==========
+function updateGreeting() {
+  const h = new Date().getHours();
+  let g = h < 12 ? 'Good morning,' : h < 17 ? 'Good afternoon,' : 'Good evening,';
+  document.getElementById('greeting-time').textContent = g;
+  const store = DB.store;
+  if(store) {
+    document.getElementById('greeting-name').textContent = store.owner + ' ji 🙏';
+    document.getElementById('header-store-name').textContent = store.name;
+  }
+}
+
+// ========== INSIGHTS ==========
+const INSIGHTS = [
+  { icon:'⚠️', text:'Vikram Yadav ka udhaar 30 din se baaki hai — aaj reminder bhejein!' },
+  { icon:'📦', text:'Chawal aur Toor Dal ki stock bahut kam hai. Aaj order karo!' },
+  { icon:'💡', text:'Is hafte Maggi aur Parle-G sabse zyada bika. Stock badhao!' },
+  { icon:'🧾', text:'GST filing ki deadline nazar aa rahi hai. Accounts check karo.' },
+  { icon:'💰', text:'Aata aur Chawal pe margin badha sakte ho — demand high hai.' },
+  { icon:'📱', text:'Amul Butter expiry mein 7 din bacha hai — sale pe lagao!' },
+  { icon:'🌟', text:'Aaj ki bikri average se upar hai. Badiya kaam!' }
+];
+
+function showInsight() {
+  const i = INSIGHTS[Math.floor(Math.random() * INSIGHTS.length)];
+  document.getElementById('insight-icon').textContent = i.icon;
+  document.getElementById('insight-text').textContent = i.text;
+}
+
+// ========== DASHBOARD ==========
+function renderDashboard() {
+  updateGreeting();
+  showInsight();
+
+  const txns = DB.transactions;
+  const todayStr2 = todayStr();
+  const todayTxns = txns.filter(t => new Date(t.date).toISOString().split('T')[0] === todayStr2);
+  const todaySales = todayTxns.reduce((s,t) => s+t.amount, 0);
+  document.getElementById('today-sales').textContent = fmtINR(todaySales);
+  document.getElementById('today-txn-count').textContent = `${todayTxns.length} transactions today`;
+
+  const udhaar = DB.udhaar.filter(u => !u.paid);
+  const udhaarTotal = udhaar.reduce((s,u) => s+u.amount, 0);
+  document.getElementById('dash-udhaar').textContent = fmtINR(udhaarTotal);
+  document.getElementById('dash-udhaar-count').textContent = `${udhaar.length} customers`;
+
+  const inv = DB.inventory;
+  const low = inv.filter(i => i.qty <= i.reorder);
+  document.getElementById('dash-lowstock').textContent = low.length;
+  const today10 = new Date(); today10.setDate(today10.getDate() + 10);
+  const expiring = inv.filter(i => i.expiry && new Date(i.expiry) <= today10);
+  document.getElementById('dash-expiring').textContent = expiring.length;
+
+  const weekStart = Date.now() - 7*86400000;
+  const weekTxns = txns.filter(t => t.date >= weekStart);
+  const weekSales = weekTxns.reduce((s,t) => s+t.amount, 0);
+  document.getElementById('dash-week').textContent = fmtINR(weekSales);
+
+  const last5 = [...txns].sort((a,b) => b.date - a.date).slice(0,5);
+  const recentEl = document.getElementById('recent-txns');
+  if(last5.length === 0) {
+    recentEl.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">Koi transaction nahi hua aaj</div></div>';
+    return;
+  }
+  recentEl.innerHTML = last5.map(t => `
+    <div class="txn-item">
+      <div class="txn-avatar">${t.emoji || '🛒'}</div>
+      <div class="txn-info">
+        <div class="txn-name">${t.item}</div>
+        <div class="txn-date">${t.customer} • ${formatDate(t.date)}</div>
+      </div>
+      <div class="txn-amount">${fmtINR(t.amount)}</div>
+    </div>
+  `).join('');
+}
+
+// ========== UDHAAR ==========
+function renderUdhaar() {
+  const list = DB.udhaar.filter(u => !u.paid);
+  const total = list.reduce((s,u) => s+u.amount, 0);
+  document.getElementById('udhaar-total-amt').textContent = fmtINR(total);
+  document.getElementById('udhaar-count-sub').textContent = `${list.length} customers pending`;
+  document.getElementById('udhaar-pending-badge').textContent = `${list.length} pending`;
+
+  const el = document.getElementById('udhaar-list');
+  if(list.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">🎉</div><div class="empty-text">Wah! Koi udhaar baaki nahi hai.<br>Sab kuch clear hai!</div></div>';
+    return;
+  }
+
+  el.innerHTML = list.map(u => {
+    const days = daysSince(u.date);
+    let cls = days >= 15 ? 'red-border' : days >= 7 ? 'yellow-border' : 'green-border';
+    let amtCls = days >= 15 ? 'red' : days >= 7 ? 'yellow' : 'green-text';
+    let daysLabel = days === 0 ? 'Aaj' : `${days} din pehle`;
+    const store = DB.store;
+    const phone = store && store.phone ? store.phone : '919876543210';
+    const waMsg = encodeURIComponent(`Namaste ${u.name} ji, aapka Sharma General Store mein ${fmtINR(u.amount)} ka udhaar baaki hai (${u.item}). Kripya jaldi settle karein. Dhanyawad! 🙏`);
+    return `
+      <div class="udhaar-card ${cls}">
+        <div class="udhaar-row1">
+          <div>
+            <div class="udhaar-name">${u.name}</div>
+            <div class="text-xs" style="margin-top:3px;">${u.item}</div>
+          </div>
+          <div class="udhaar-amount ${amtCls}">${fmtINR(u.amount)}</div>
+        </div>
+        <div class="udhaar-row2">
+          <div class="udhaar-days">📅 ${daysLabel}</div>
+          <div class="udhaar-actions">
+            <a href="https://wa.me/${phone}?text=${waMsg}" target="_blank">
+              <button class="btn-sm btn-wa">📱 WhatsApp</button>
+            </a>
+            <button class="btn-sm btn-paid" onclick="markPaid(${u.id})">✅ Paid</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function addUdhaar() {
+  const name = document.getElementById('new-udhaar-name').value.trim();
+  const amount = parseFloat(document.getElementById('new-udhaar-amount').value);
+  const item = document.getElementById('new-udhaar-item').value.trim() || 'Grocery';
+  if(!name || !amount || amount <= 0) {
+    alert('Naam aur amount sahi se daalo!');
+    return;
+  }
+  const list = DB.udhaar;
+  list.push({ id: Date.now(), name, amount, item, date: Date.now(), paid: false });
+  DB.udhaar = list;
+  document.getElementById('new-udhaar-name').value = '';
+  document.getElementById('new-udhaar-amount').value = '';
+  document.getElementById('new-udhaar-item').value = '';
+  renderUdhaar();
+}
+
+function markPaid(id) {
+  const list = DB.udhaar;
+  const u = list.find(x => x.id === id);
+  if(u && confirm(`${u.name} ka ${fmtINR(u.amount)} paid mark karein?`)) {
+    u.paid = true;
+    DB.udhaar = list;
+    renderUdhaar();
+  }
+}
+
+// ========== INVENTORY ==========
+let invFilter = 'all';
+function setInvFilter(f, btn) {
+  invFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderInventory();
+}
+
+function renderInventory() {
+  let items = DB.inventory;
+  const today10 = new Date(); today10.setDate(today10.getDate() + 10);
+  document.getElementById('inv-count-badge').textContent = `${items.length} items`;
+
+  if(invFilter === 'low') items = items.filter(i => i.qty <= i.reorder);
+  else if(invFilter === 'expiring') items = items.filter(i => i.expiry && new Date(i.expiry) <= today10);
+
+  const el = document.getElementById('inventory-list');
+  if(items.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-text">Is filter mein koi item nahi hai</div></div>';
+    return;
+  }
+
+  el.innerHTML = items.map(item => {
+    const isLow = item.qty <= item.reorder;
+    const isExp = item.expiry && daysUntil(item.expiry) <= 10;
+    let cardCls = isExp ? 'expiring' : isLow ? 'low' : '';
+    const pct = Math.min(100, Math.round((item.qty / (item.reorder * 2)) * 100));
+    const barColor = isExp ? 'var(--red)' : isLow ? 'var(--primary)' : 'var(--green)';
+    let tagHtml = isExp ? `<span class="inv-tag tag-exp">⏰ Expiring in ${daysUntil(item.expiry)}d</span>`
+      : isLow ? `<span class="inv-tag tag-low">⚡ Low Stock</span>`
+      : `<span class="inv-tag tag-ok">✅ OK</span>`;
+    const expiryLabel = item.expiry ? `Expiry: ${item.expiry}` : '';
+    return `
+      <div class="inv-card ${cardCls}">
+        <div class="inv-row1">
+          <div>
+            <div class="inv-name">${item.name}</div>
+            <div class="inv-cat">${item.cat}</div>
+          </div>
+          <div class="inv-qty">
+            <div class="inv-qty-val">${item.qty}</div>
+            <div class="inv-qty-unit">${item.unit}</div>
+          </div>
+        </div>
+        <div class="inv-bar-wrap">
+          <div class="inv-bar" style="width:${pct}%;background:${barColor};"></div>
+        </div>
+        <div class="inv-row2">
+          ${tagHtml}
+          <div class="inv-expiry">${expiryLabel}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function addInventoryItem() {
+  const name = document.getElementById('inv-name').value.trim();
+  const cat = document.getElementById('inv-cat').value.trim() || 'General';
+  const qty = parseFloat(document.getElementById('inv-qty').value);
+  const unit = document.getElementById('inv-unit').value.trim() || 'pcs';
+  const reorder = parseFloat(document.getElementById('inv-reorder').value) || 5;
+  const expiry = document.getElementById('inv-expiry').value;
+  if(!name || isNaN(qty)) { alert('Naam aur quantity daalo!'); return; }
+  const list = DB.inventory;
+  list.push({ id: Date.now(), name, cat, qty, unit, reorder, expiry });
+  DB.inventory = list;
+  ['inv-name','inv-cat','inv-qty','inv-unit','inv-reorder','inv-expiry'].forEach(id => document.getElementById(id).value = '');
+  renderInventory();
+}
+
+// ========== REPORTS ==========
+function renderReports() {
+  const txns = DB.transactions;
+  const weekStart = Date.now() - 7*86400000;
+  const weekTxns = txns.filter(t => t.date >= weekStart);
+  const weekSales = weekTxns.reduce((s,t) => s+t.amount, 0);
+  const profit = Math.round(weekSales * 0.30);
+  const avg = weekTxns.length ? Math.round(weekSales/7) : 0;
+
+  document.getElementById('rpt-sales').textContent = fmtINR(weekSales);
+  document.getElementById('rpt-profit').textContent = fmtINR(profit);
+  document.getElementById('rpt-avg').textContent = fmtINR(avg);
+  document.getElementById('rpt-txns').textContent = weekTxns.length;
+
+  // Top 5 items
+  const itemMap = {};
+  weekTxns.forEach(t => { itemMap[t.item] = (itemMap[t.item]||0) + t.amount; });
+  const sorted = Object.entries(itemMap).sort((a,b) => b[1]-a[1]).slice(0,5);
+  const maxVal = sorted[0] ? sorted[0][1] : 1;
+  const colors = ['#FF6B00','#FF8C33','#00A86B','#FFB800','#4A90D9'];
+  const chartEl = document.getElementById('top-items-chart');
+  chartEl.innerHTML = sorted.map(([name,val],i) => `
+    <div class="bar-item">
+      <div class="bar-label">${name}</div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${Math.round((val/maxVal)*100)}%;background:${colors[i]};">${fmtINR(val)}</div>
+      </div>
+    </div>
+  `).join('');
+
+  // GST
+  const totalSales = txns.reduce((s,t) => s+t.amount, 0);
+  const taxable5 = Math.round(totalSales * 0.4);
+  const taxable12 = Math.round(totalSales * 0.3);
+  const gst5 = Math.round(taxable5 * 0.05);
+  const gst12 = Math.round(taxable12 * 0.12);
+  document.getElementById('gst-summary').innerHTML = `
+    <div class="gst-row"><span class="gst-label">Total Sales (All time)</span><span class="gst-val">${fmtINR(totalSales)}</span></div>
+    <div class="gst-row"><span class="gst-label">5% GST Taxable (Grocery)</span><span class="gst-val">${fmtINR(taxable5)}</span></div>
+    <div class="gst-row"><span class="gst-label">GST Collected @5%</span><span class="gst-val" style="color:var(--primary)">${fmtINR(gst5)}</span></div>
+    <div class="gst-row"><span class="gst-label">12% GST Taxable (FMCG)</span><span class="gst-val">${fmtINR(taxable12)}</span></div>
+    <div class="gst-row"><span class="gst-label">GST Collected @12%</span><span class="gst-val" style="color:var(--primary)">${fmtINR(gst12)}</span></div>
+    <div class="gst-row" style="border-top:2px solid var(--border);margin-top:4px;padding-top:12px;">
+      <span class="gst-label" style="font-weight:700;color:var(--text)">Total GST to Pay</span>
+      <span class="gst-val" style="color:var(--red);font-size:16px;">${fmtINR(gst5+gst12)}</span>
+    </div>
+  `;
+
+  // Monthly trend (4 weeks)
+  const trend = document.getElementById('monthly-trend');
+  const weeks = [];
+  for(let w = 3; w >= 0; w--) {
+    const wStart = Date.now() - (w+1)*7*86400000;
+    const wEnd = Date.now() - w*7*86400000;
+    const wTxns = txns.filter(t => t.date >= wStart && t.date < wEnd);
+    const wSales = wTxns.reduce((s,t) => s+t.amount, 0);
+    const wLabel = w === 0 ? 'Is Hafte' : `${w+1} Hafte Pehle`;
+    weeks.push({ label: wLabel, sales: wSales });
+  }
+  const maxW = Math.max(...weeks.map(w => w.sales), 1);
+  trend.innerHTML = weeks.map(w => {
+    const h = Math.round((w.sales / maxW) * 80);
+    return `
+      <div class="week-bar">
+        <div class="week-bar-wrap">
+          <div class="week-bar-fill" style="height:${h}px;"></div>
+        </div>
+        <div class="week-label">${w.label.split(' ')[0]}<br>${w.label.split(' ').slice(1).join(' ')}</div>
+        <div class="week-val">${fmtINR(w.sales)}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function sendWhatsAppReport() {
+  const txns = DB.transactions;
+  const weekStart = Date.now() - 7*86400000;
+  const weekTxns = txns.filter(t => t.date >= weekStart);
+  const weekSales = weekTxns.reduce((s,t) => s+t.amount, 0);
+  const profit = Math.round(weekSales * 0.30);
+  const store = DB.store;
+  const msg = encodeURIComponent(
+    `📊 *Shop Saathi - Weekly Report*\n` +
+    `🏪 ${store ? store.name : 'Meri Dukaan'}\n\n` +
+    `💰 Total Bikri: ${fmtINR(weekSales)}\n` +
+    `📈 Net Profit: ${fmtINR(profit)}\n` +
+    `🧾 Transactions: ${weekTxns.length}\n\n` +
+    `📒 Udhaar Baaki: ${fmtINR(DB.udhaar.filter(u=>!u.paid).reduce((s,u)=>s+u.amount,0))}\n` +
+    `\n_Generated by Shop Saathi_`
+  );
+  const phone = store && store.phone ? store.phone : '919876543210';
+  window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+}
+
+// ========== AI CHAT ==========
+function loadApiKeyUI() {
+  const key = DB.apiKey;
+  if(key) {
+    document.getElementById('api-key-input').value = '••••••••••••••••';
+    document.getElementById('api-key-input').dataset.saved = '1';
+  }
+}
+
+function saveApiKey() {
+  const val = document.getElementById('api-key-input').value.trim();
+  if(val && !val.startsWith('••')) {
+    DB.apiKey = val;
+    document.getElementById('api-key-input').value = '••••••••••••••••';
+    document.getElementById('api-key-input').dataset.saved = '1';
+    showToast('API key save ho gaya ✅');
+  }
+}
+
+const CHAT_CHIPS = [
+  'Mera profit kya hai?',
+  'Kaun sa item sabse zyada bika?',
+  'GST kaise file kare?',
+  'Udhaar reminder bhejo',
+  'Low stock kaun si hai?',
+  'Is hafte ka hisaab batao'
+];
+
+function initChatChips() {
+  const row = document.getElementById('chat-chips');
+  row.innerHTML = CHAT_CHIPS.map(q => `<div class="chip" onclick="askChip(this, '${q}')">${q}</div>`).join('');
+}
+
+function askChip(el, q) {
+  document.getElementById('chat-input').value = q;
+  sendChat();
+}
+
+function handleChatKey(e) {
+  if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
+}
+
+function appendMsg(role, text) {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  div.innerHTML = `
+    <div class="msg-avatar">${role === 'ai' ? '🤖' : '👤'}</div>
+    <div class="msg-bubble">${text.replace(/\n/g,'<br>')}</div>
+  `;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+function showTyping() {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'msg ai';
+  div.id = 'typing-indicator';
+  div.innerHTML = `
+    <div class="msg-avatar">🤖</div>
+    <div class="typing-indicator">
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+    </div>
+  `;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing-indicator');
+  if(t) t.remove();
+}
+
+function buildContext() {
+  const udhaar = DB.udhaar.filter(u => !u.paid);
+  const udhaarTotal = udhaar.reduce((s,u) => s+u.amount, 0);
+  const txns = DB.transactions;
+  const weekTxns = txns.filter(t => t.date >= Date.now() - 7*86400000);
+  const weekSales = weekTxns.reduce((s,t) => s+t.amount, 0);
+  const inv = DB.inventory;
+  const low = inv.filter(i => i.qty <= i.reorder);
+  return `
+Store: ${DB.store ? DB.store.name : 'General Store'}, Location: ${DB.store ? DB.store.location : 'India'}
+Is hafte ki bikri: ₹${weekSales.toLocaleString('en-IN')}
+Net profit (30%): ₹${Math.round(weekSales*0.3).toLocaleString('en-IN')}
+Udhaar baaki: ₹${udhaarTotal.toLocaleString('en-IN')} (${udhaar.length} customers)
+Low stock items: ${low.map(i => i.name).join(', ') || 'None'}
+Top udhaar: ${udhaar.slice(0,3).map(u => `${u.name} ₹${u.amount}`).join(', ')}
+  `.trim();
+}
+
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if(!text) return;
+
+  const key = DB.apiKey;
+  if(!key) {
+    appendMsg('ai', '🔑 Pehle apna Anthropic API key daalo upar wale box mein. Phir baat karte hain, Dukandaar ji!');
+    return;
+  }
+
+  input.value = '';
+  input.style.height = 'auto';
+  appendMsg('user', text);
+  showTyping();
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 500,
+        system: `You are Shop Saathi, an AI assistant for Indian Kirana/grocery store owners. You help with retail, inventory, GST, udhaar (credit), and profit/loss analysis.
+
+Rules:
+- Always address the owner as "Dukandaar ji"
+- Keep answers short, practical, and actionable (max 3-4 sentences)
+- Use Hinglish (mix of Hindi and English) naturally
+- Use Indian number formatting (lakhs, crores)
+- If asked about data, refer to the store context below
+- Only discuss retail, inventory, GST, accounting, udhaar, pricing
+
+Store Context:
+${buildContext()}`,
+        messages: [{ role: 'user', content: text }]
+      })
+    });
+
+    removeTyping();
+    if(!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      const msg = err.error ? err.error.message : 'Server error. Thodi der baad try karo.';
+      appendMsg('ai', `❌ Error: ${msg}`);
+      return;
+    }
+    const data = await resp.json();
+    const reply = data.content && data.content[0] ? data.content[0].text : 'Kuch samajh nahi aaya. Dobara poochho.';
+    appendMsg('ai', reply);
+  } catch(e) {
+    removeTyping();
+    appendMsg('ai', '❌ Network error. Check karo internet connection aur API key, Dukandaar ji.');
+  }
+}
+
+// ========== SETTINGS ==========
+function openSettings() {
+  const store = DB.store || {};
+  document.getElementById('settings-store-name').value = store.name || '';
+  document.getElementById('settings-owner-name').value = store.owner || '';
+  document.getElementById('settings-location').value = store.location || '';
+  document.getElementById('settings-phone').value = store.phone || '';
+  document.getElementById('settings-api-key').value = DB.apiKey || '';
+  document.getElementById('settings-modal').classList.add('open');
+}
+
+function closeSettings() {
+  document.getElementById('settings-modal').classList.remove('open');
+}
+
+function saveSettings() {
+  const name = document.getElementById('settings-store-name').value.trim();
+  const owner = document.getElementById('settings-owner-name').value.trim();
+  const location = document.getElementById('settings-location').value.trim();
+  const phone = document.getElementById('settings-phone').value.trim();
+  const apiKey = document.getElementById('settings-api-key').value.trim();
+
+  DB.store = { name: name||'My Store', owner: owner||'Owner', location, phone };
+  if(apiKey && !apiKey.startsWith('••')) DB.apiKey = apiKey;
+  closeSettings();
+  updateGreeting();
+  document.getElementById('header-store-name').textContent = name || 'My Store';
+  showToast('Settings save ho gaya ✅');
+}
+
+// ========== TOAST ==========
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = `
+    position:fixed;bottom:calc(var(--nav-h) + 16px);left:50%;transform:translateX(-50%);
+    background:var(--bg3);border:1px solid var(--border);color:var(--text);
+    padding:10px 20px;border-radius:12px;font-size:13px;font-weight:600;
+    z-index:9000;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,0.4);
+    animation:toastIn 0.3s ease;
+  `;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.style.opacity = '0', 1800);
+  setTimeout(() => t.remove(), 2100);
+}
+
+// Click outside modal to close
+document.getElementById('settings-modal').addEventListener('click', function(e) {
+  if(e.target === this) closeSettings();
+});
+
+// ========== INIT ==========
+window.addEventListener('load', () => {
+  if(!DB.initialized) initDummyData();
+  initChatChips();
+  renderDashboard();
+
+  setTimeout(() => {
+    const splash = document.getElementById('splash');
+    splash.classList.add('hidden');
+    setTimeout(() => { splash.style.display = 'none'; }, 600);
+  }, 2200);
+});
+
+// ========== TREND BAZAAR ==========
+
+function getSeason(month) {
+  if (month >= 3 && month <= 5) return 'Summer';
+  if (month >= 6 && month <= 9) return 'Monsoon';
+  if (month >= 10 && month <= 11) return 'Festival';
+  return 'Winter';
+}
+
+function getSeasonEmoji(season) {
+  return { Summer:'🌞', Monsoon:'🌧️', Winter:'❄️', Festival:'🪔' }[season] || '🌞';
+}
+
+function getSeasonClass(season) {
+  return { Summer:'summer', Monsoon:'monsoon', Winter:'winter', Festival:'festival' }[season] || 'summer';
+}
+
+function trendsAge() {
+  const ts = localStorage.getItem('trends_last_updated');
+  if (!ts) return Infinity;
+  return (Date.now() - parseInt(ts)) / 3600000;
+}
+
+function updateTrendsTimestamp() {
+  const ts = localStorage.getItem('trends_last_updated');
+  const el = document.getElementById('trends-updated-label');
+  if (!el) return;
+  if (!ts) { el.textContent = ''; return; }
+  const h = Math.floor((Date.now() - parseInt(ts)) / 3600000);
+  const m = Math.floor((Date.now() - parseInt(ts)) / 60000);
+  el.textContent = h < 1 ? `Updated ${m}m ago` : h < 24 ? `Updated ${h}h ago` : 'Updated >24h ago';
+}
+
+function renderTrendsSkeleton() {
+  const el = document.getElementById('trends-content');
+  el.innerHTML = `
+    <div style="text-align:center;padding:12px 0 16px;font-size:13px;color:var(--text2);">AI trends fetch kar raha hai… 🔍</div>
+    <div class="skeleton skel-banner"></div>
+    ${[1,2,3].map(() => `
+      <div class="skel-card">
+        <div class="skeleton skel-line w-40 h-20" style="margin-bottom:10px;"></div>
+        <div class="skeleton skel-line w-80"></div>
+        <div class="skeleton skel-line w-60 h-8"></div>
+        <div class="skeleton skel-line w-100 h-8"></div>
+      </div>
+    `).join('')}
+  `;
+}
+
+function renderTrendsError(msg) {
+  const el = document.getElementById('trends-content');
+  el.innerHTML = `
+    <div class="empty-state" style="padding:60px 20px;">
+      <div class="empty-icon">😕</div>
+      <div class="empty-text">${msg}</div>
+      ${msg.includes('API key') ? '' : `<button class="btn-full" style="margin-top:16px;max-width:220px;" onclick="refreshTrends()">🔄 Dobara Try Karo</button>`}
+    </div>
+  `;
+}
+
+function renderTrendsContent(data) {
+  const season = data.season || 'Summer';
+  const seasonCls = getSeasonClass(season);
+  const seasonEmoji = getSeasonEmoji(season);
+
+  const trendingHTML = (data.trending || []).map(p => {
+    const dirClass = p.trend_direction === 'up' ? 'up' : 'down';
+    const dirArrow = p.trend_direction === 'up' ? '↑ Trending Up' : '↓ Trending Down';
+    const score = Math.min(100, Math.max(0, parseInt(p.trend_score) || 70));
+    const searchTerm = encodeURIComponent(p.amazon_search || p.name);
+    return `
+      <div class="trend-card">
+        <div class="trend-top">
+          <div class="trend-rank">#${p.rank}</div>
+          <div class="trend-info">
+            <div class="trend-name">${p.name}</div>
+            <div class="trend-meta">
+              <span class="trend-cat">${p.category}</span>
+              <span class="trend-direction ${dirClass}">${dirArrow}</span>
+              <span class="trend-margin">~${p.estimated_margin} margin</span>
+            </div>
+          </div>
+        </div>
+        <div class="trend-score-row">
+          <div class="trend-score-label">Trend Score</div>
+          <div class="trend-score-track"><div class="trend-score-fill" style="width:${score}%"></div></div>
+          <div class="trend-score-val">${score}</div>
+        </div>
+        <div class="trend-reason">${p.reason}</div>
+        <div class="trend-footer">
+          <div class="trend-stock-hint">📦 Stock karo: ${p.suggested_stock}</div>
+          <a href="https://www.amazon.in/s?k=${searchTerm}" target="_blank" class="btn-amazon">🛒 Amazon pe dekho</a>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const avoidHTML = (data.avoid_this_week || []).map(p => `
+    <div class="avoid-card">
+      <div class="avoid-name">⚠️ ${p.name}</div>
+      <div class="avoid-reason">${p.reason}</div>
+    </div>
+  `).join('');
+
+  const el = document.getElementById('trends-content');
+  el.innerHTML = `
+    <!-- Season Banner -->
+    <div class="season-banner ${seasonCls}">
+      <div class="season-badge">${seasonEmoji} ${season} Season</div>
+      <div class="season-tip">${data.seasonal_tip || ''}</div>
+    </div>
+
+    <!-- Trending Products -->
+    <div class="section-header" style="margin-bottom:12px;">
+      <div class="section-title">📈 Stock Karo — Trending This Week</div>
+      <div class="badge">${(data.trending||[]).length} items</div>
+    </div>
+    ${trendingHTML}
+
+    <!-- Avoid This Week -->
+    <div class="section-header" style="margin:16px 0 12px;">
+      <div class="section-title">⚠️ Avoid Overstocking</div>
+      <div class="badge badge-red">${(data.avoid_this_week||[]).length} items</div>
+    </div>
+    ${avoidHTML}
+
+    <!-- Local Insight -->
+    <div class="local-insight-card" style="margin-top:16px;">
+      <div class="local-insight-label">💡 Maharashtra Local Insight</div>
+      <div class="local-insight-text">${data.local_insight || ''}</div>
+    </div>
+
+    <!-- Margin Calculator -->
+    <div class="margin-calc-card">
+      <div class="section-title" style="margin-bottom:4px;">🧮 Margin Calculator</div>
+      <div class="text-sm" style="margin-bottom:14px;">Apna margin turant calculate karo</div>
+      <div class="form-row">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Kharid price (₹)</label>
+          <input class="form-input" id="mc-buy" type="number" placeholder="100" oninput="calcMargin()">
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label">Bikri price (₹)</label>
+          <input class="form-input" id="mc-sell" type="number" placeholder="130" oninput="calcMargin()">
+        </div>
+      </div>
+      <div class="margin-result">
+        <div class="margin-result-label">Aapka margin:</div>
+        <div class="margin-result-val" id="mc-result" style="color:var(--green)">—</div>
+        <div class="margin-result-sub" id="mc-profit-sub"></div>
+      </div>
+    </div>
+
+    <div style="height:8px;"></div>
+  `;
+}
+
+function calcMargin() {
+  const buy = parseFloat(document.getElementById('mc-buy').value);
+  const sell = parseFloat(document.getElementById('mc-sell').value);
+  const resEl = document.getElementById('mc-result');
+  const subEl = document.getElementById('mc-profit-sub');
+  if (!buy || !sell || buy <= 0) { resEl.textContent = '—'; resEl.style.color = 'var(--text3)'; subEl.textContent = ''; return; }
+  const margin = ((sell - buy) / sell) * 100;
+  const markup = ((sell - buy) / buy) * 100;
+  const profit = sell - buy;
+  resEl.textContent = margin.toFixed(1) + '%';
+  resEl.style.color = margin >= 20 ? 'var(--green)' : margin >= 10 ? 'var(--yellow)' : 'var(--red)';
+  subEl.textContent = `Profit: ₹${profit.toFixed(2)} per unit • Markup: ${markup.toFixed(1)}%`;
+}
+
+async function fetchTrendsFromAPI() {
+  const key = DB.apiKey;
+  if (!key) {
+    renderTrendsContent(DUMMY_TRENDS);
+    const lbl = document.getElementById('trends-updated-label');
+    if (lbl) lbl.textContent = '📋 Demo data — API key daalo live trends ke liye';
+    const btn = document.getElementById('trends-refresh-btn');
+    if (btn) btn.classList.remove('spinning');
+    return;
+  }
+
+  renderTrendsSkeleton();
+
+  const now = new Date();
+  const monthName = now.toLocaleString('en-IN', { month: 'long' });
+  const season = getSeason(now.getMonth());
+
+  const systemPrompt = `You are a retail market intelligence engine for Indian Kirana grocery stores.
+You have knowledge of FMCG trends, seasonal demand, and Indian retail patterns.
+Always respond in valid JSON only. No markdown. No explanation. Just JSON.
+Generate a weekly trending products report for Indian Kirana/grocery store owners
+in Maharashtra (Tier 2/3 cities like Pune, Nashik, Aurangabad).
+
+Current month: ${monthName}
+Current season: ${season}
+
+Return a JSON object in exactly this format:
+{
+  "week": "Week of [date]",
+  "season": "${season}",
+  "seasonal_tip": "One practical tip in Hinglish about what to stock this season",
+  "trending": [
+    {
+      "rank": 1,
+      "name": "Product name",
+      "category": "Category",
+      "trend_score": 85,
+      "trend_direction": "up",
+      "reason": "Short reason why trending in Hinglish",
+      "estimated_margin": "18-22%",
+      "suggested_stock": "2 dozen",
+      "amazon_search": "exact search term for Amazon India"
+    }
+  ],
+  "avoid_this_week": [
+    {
+      "name": "Product name",
+      "reason": "Why to avoid stocking heavily this week in Hinglish"
+    }
+  ],
+  "local_insight": "One hyperlocal insight about Maharashtra market this week in Hinglish"
+}
+
+Return exactly 8 trending products and 3 products to avoid.
+Cover these categories: Beverages, Snacks, Staples, Personal Care, Household.
+Make it realistic and seasonally accurate for current month.`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 2000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: 'Generate the weekly trends report now.' }]
+      })
+    });
+
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      if (resp.status === 401 || (err.error && err.error.type === 'authentication_error')) {
+        renderTrendsContent(DUMMY_TRENDS);
+        const lbl = document.getElementById('trends-updated-label');
+        if (lbl) lbl.textContent = '⚠️ API key invalid — demo data dikh raha hai';
+        return;
+      }
+      renderTrendsError(err.error ? `API Error: ${err.error.message}` : 'Trends load nahi hue. Dobara try karo.');
+      return;
+    }
+
+    const data = await resp.json();
+    const raw = data.content && data.content[0] ? data.content[0].text : '';
+    let parsed;
+    try {
+      // Strip any accidental markdown fences
+      const clean = raw.replace(/^```json\s*/i,'').replace(/^```\s*/,'').replace(/```\s*$/,'').trim();
+      parsed = JSON.parse(clean);
+    } catch(e) {
+      renderTrendsError('AI ka response parse nahi hua. Refresh karo.');
+      return;
+    }
+
+    localStorage.setItem('trends_cache', JSON.stringify(parsed));
+    localStorage.setItem('trends_last_updated', Date.now().toString());
+    renderTrendsContent(parsed);
+    updateTrendsTimestamp();
+  } catch(e) {
+    renderTrendsError('Network error. Internet check karo aur dobara try karo.');
+  } finally {
+    const btn = document.getElementById('trends-refresh-btn');
+    if (btn) btn.classList.remove('spinning');
+  }
+}
+
+const DUMMY_TRENDS = {
+  week: "Week of 9 June 2026",
+  season: "Summer",
+  seasonal_tip: "Garmi mein thanda peene ki demand bahut zyada hoti hai — cold drinks, ORS, aur nimbu paani ki stock double kar lo, Dukandaar ji!",
+  trending: [
+    { rank:1, name:"Electral / ORS Sachet", category:"Health & Pharma", trend_score:95, trend_direction:"up", reason:"June ki garmi mein dehydration ka darrr — har ghar mein demand hai. Fast mover!",        estimated_margin:"22-28%", suggested_stock:"4 dozen strips", amazon_search:"Electral ORS sachets 21 pack" },
+    { rank:2, name:"Frooti / Maaza (200ml)", category:"Beverages",       trend_score:91, trend_direction:"up", reason:"Bacchon ki favourite summer drink. Demand ghar se bahar tak — dukan pe rakhna zaroori.",    estimated_margin:"15-20%", suggested_stock:"3 crates",       amazon_search:"Frooti mango drink 200ml pack" },
+    { rank:3, name:"Bisleri / Kinley (1L)",  category:"Beverages",       trend_score:89, trend_direction:"up", reason:"Travel aur office wale daily buy karte hain. June mein fastest moving item.",               estimated_margin:"10-14%", suggested_stock:"5 crates",       amazon_search:"Bisleri packaged drinking water 1L" },
+    { rank:4, name:"Talcum Powder (Ponds/Nycil)", category:"Personal Care", trend_score:84, trend_direction:"up", reason:"Garmi mein prickly heat aur sweating — Nycil aur Ponds ka season ye hai.",             estimated_margin:"18-24%", suggested_stock:"2 dozen",        amazon_search:"Nycil prickly heat talcum powder" },
+    { rank:5, name:"Lays (all flavours)",    category:"Snacks",           trend_score:80, trend_direction:"up", reason:"Evening snacking mein consistent top seller. Masala Lime sabse zyada chalta hai.",        estimated_margin:"12-16%", suggested_stock:"3 boxes",        amazon_search:"Lays chips variety pack India" },
+    { rank:6, name:"Sunsilk / Head & Shoulders", category:"Personal Care", trend_score:76, trend_direction:"up", reason:"Summer mein hair wash frequency badhti hai — shampoo sachet bhi zyada biktey hain.",   estimated_margin:"16-20%", suggested_stock:"50 sachets",     amazon_search:"Head Shoulders shampoo sachets India" },
+    { rank:7, name:"Slice Mango Drink (600ml)", category:"Beverages",    trend_score:73, trend_direction:"up", reason:"Pune mein college students aur young customers mein Slice ka craze hai is season.",      estimated_margin:"14-18%", suggested_stock:"2 crates",       amazon_search:"Slice mango drink 600ml PepsiCo" },
+    { rank:8, name:"Parle Wafers / Kurkure", category:"Snacks",           trend_score:68, trend_direction:"up", reason:"Budget snack — ₹10-20 pack mein bechne se volume aur footfall dono badhte hain.",       estimated_margin:"18-22%", suggested_stock:"4 boxes",        amazon_search:"Kurkure masala munch snacks pack" }
+  ],
+  avoid_this_week: [
+    { name:"Chyawanprash (500g)",    reason:"Ye winter immunity booster hai — June mein demand almost zero. Stock mat badhao, expire ho sakta hai." },
+    { name:"Hot Chocolate / Bournvita (tin)", reason:"Garmi mein hot drinks ki demand girr jaati hai. Purani stock clear karo, naya order avoid karo." },
+    { name:"Woollen Socks / Inner Wear", reason:"Non-grocery item jo summer mein nahi bikta — shelf space waste hogi. Space better use hoga cold drinks mein." }
+  ],
+  local_insight: "Pune mein June ke pehle hafte colleges band hote hain — student traffic kam hoti hai, lekin family bulk buying badhti hai. Poha, Aata, aur Refined Oil ke combo offers rakho, zyada sale hoga!"
+};
+
+function renderTrends() {
+  updateTrendsTimestamp();
+  const cached = localStorage.getItem('trends_cache');
+  if (cached && trendsAge() < 24) {
+    try {
+      renderTrendsContent(JSON.parse(cached));
+      return;
+    } catch(e) { /* fall through */ }
+  }
+  if (!DB.apiKey) {
+    renderTrendsContent(DUMMY_TRENDS);
+    const lbl = document.getElementById('trends-updated-label');
+    if (lbl) lbl.textContent = '📋 Demo data — API key daalo live trends ke liye';
+    return;
+  }
+  fetchTrendsFromAPI();
+}
+
+function refreshTrends() {
+  const btn = document.getElementById('trends-refresh-btn');
+  if (btn) btn.classList.add('spinning');
+  if (!DB.apiKey) {
+    setTimeout(() => {
+      renderTrendsContent(DUMMY_TRENDS);
+      const lbl = document.getElementById('trends-updated-label');
+      if (lbl) lbl.textContent = '📋 Demo data — API key daalo live trends ke liye';
+      if (btn) btn.classList.remove('spinning');
+    }, 600);
+    return;
+  }
+  fetchTrendsFromAPI();
+}
+
+// ========== TREND BAZAAR END ==========
+
+// Style for toast animation
+const style = document.createElement('style');
+style.textContent = `@keyframes toastIn { from { opacity:0; transform:translateX(-50%) translateY(10px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }`;
+document.head.appendChild(style);
+</script>
+</body>
+</html>
